@@ -156,23 +156,34 @@ public:
 	 */
 	void runGeneration()
 	{
+
+        
 		if( mFitnessFunction ) {
 			// Prepare scoring variables:
 			float  tScores[ mPopulationSize ];
 			size_t tBestIdx    = 0;
 			float  tBestScore  = -1e12;
 			float  tWorstScore = 1e12;
+            float tAvgScore = 0.0;
 			// Perform scoring:
 			for(size_t i = 0; i < mPopulationSize; i++) {
 				tScores[ i ] = mFitnessFunction( mPopulation[ i ], mGeneCount );
+                //std::cout << "TSCORES individual " << tScores[i] << std::endl;
+                tAvgScore += tScores[i];
 				if( tScores[ i ] > tBestScore ) {
 					tBestScore = tScores[ i ];
 					tBestIdx   = i;
+                    
+
 				}
 				if( tScores[ i ] < tWorstScore ) {
 					tWorstScore = tScores[ i ];
 				}
 			}
+            
+            tAvgScore/=mPopulationSize;
+            
+            std::cout << "avg: " << tAvgScore << std::endl;
 			// Check whether best individual is complete:
 			if( getBoardWin( mPopulation[ tBestIdx ], mGeneCount ) ) {
 				// Copy win state:
@@ -216,6 +227,10 @@ public:
 				mPopulation = tPopulation;
 				// Advance generation iter:
 				mGenerationIter++;
+                
+                //std::cout << "mGen: " <<  mGenerationIter << std::endl;
+                mPrintFunction(mPopulation[0],81);
+
 			}
 		}
 	}

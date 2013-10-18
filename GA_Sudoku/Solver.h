@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Constants.h"
+#include <array>
 
 /**
  * THE CONTENTS OF THIS FILE SHOULD BE EDITED TO PRODUCE A WINNING SUDOKU SOLVER...
@@ -18,33 +19,109 @@
 #pragma mark - TEAM_PARAMS
 
 static const std::string	kAuthorTeam		= "Aaron Test App";
-static const float			kMutationRate	= 0.01f;
+static const float			kMutationRate	= 0.5f;
 
 #pragma mark -
 #pragma mark - TEAM_FUNCTIONS
 
+
+static bool tArray[9];
+
+void evaluate(int n){   //pass in tile value as n. Returns tCount as an int between 1 - 9, a measure of fiteness
+    
+    
+    //-------- begin evaluation --------- //
+
+        switch (n) {
+            case 1: tArray[0] = true;
+            case 2: tArray[1] = true;
+            case 3: tArray[2] = true;
+            case 4: tArray[3] = true;
+            case 5: tArray[4] = true;
+            case 6: tArray[5] = true;
+            case 7: tArray[6] = true;
+            case 8: tArray[7] = true;
+            case 9: tArray[8] = true;
+        }
+    
+
+    //std::cout << "tCount: " << tCount << std::endl;
+    //return tCount;
+}
+
+
+
 static float fitnessFunc(const int* iBoard, const size_t& iTileCount)
 {
-	
-    
+
+    memset(tArray, 0, 9);
+    int tCount = 0;
+    //--------  evaluate blocks --------- //
     
     for (int a = 0; a<9; a+=3) {
         for (int b = 0; b<9; b+=3) {
             
-            
             for(int i = a; i < 3+a; i++) {
                 for(int j = b; j < 3+b; j++) {
-                    printf( "%i ", iBoard[ i * 9 + j ] );
+                    evaluate(iBoard[ i * 9 + j ] );
                 }
-                printf( "\n" );
             }
-            printf( "\n" );
-            
+            for(int i=0; i<9; i++){
+                if(tArray[i] == true) tCount++;
+            }
+            memset(tArray, 0, 9);
+
         }
     }
     
-	
-	return (float)rand() / (float)RAND_MAX;
+    
+    //--------  evaluate rows --------- //
+    
+    for (int a =0; a<9; a++){
+        for (int b = 0; b<9; b++){
+            evaluate(iBoard[ a * 9 + b ] );
+        }
+        for(int i=0; i<9; i++){
+            if(tArray[i] == true) tCount++;
+        }
+        memset(tArray, 0, 9);
+    }
+    
+     //--------  evaluate columns --------- //
+    
+    for (int a =0; a<9; a++){
+        for (int b = 0; b<9; b++){
+            evaluate(iBoard[ b * 9 + a ] );
+        }
+        for(int i=0; i<9; i++){
+            if(tArray[i] == true) tCount++;
+        }
+        memset(tArray, 0, 9);
+    }
+
+    //std::cout << "tCount: " << tCount << std::endl;
+    
+    
+    int one, two, three, four, five, six, seven, eight, nine;
+    
+    for (int i=0; i<81; i++){
+        if(iBoard[i] == 1) one++;
+        if(iBoard[i] == 1) two++;
+        if(iBoard[i] == 1) three++;
+        if(iBoard[i] == 1) four++;
+        
+
+
+
+        
+        }
+    
+    
+    
+    
+    
+	return (float)tCount/729;
+    
 }
 
 static void crossoverFunc(const int* iBoardA, const int* iBoardB, int* oBoard, const size_t& iTileCount)
@@ -92,19 +169,4 @@ static void printBoard(int* iBoard, const size_t& iTileCount)
 	}
 	printf( "\n" );
     
-    
-    for (int a = 0; a<9; a+=3) {
-        for (int b = 0; b<9; b+=3) {
-            
-            
-            for(int i = a; i < 3+a; i++) {
-                for(int j = b; j < 3+b; j++) {
-                    printf( "%i ", iBoard[ i * 9 + j ] );
-                }
-                printf( "\n" );
-            }
-            printf( "\n" );
-            
-        }
-    }
 }
