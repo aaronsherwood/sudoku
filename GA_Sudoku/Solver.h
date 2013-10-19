@@ -207,9 +207,10 @@ static float fitnessFunc(const int* iBoard, const size_t& iTileCount)
 
 static void crossoverFunc(const int* iBoardA, const int* iBoardB, int* oBoard, const size_t& iTileCount)
 {
-	// EXERCISE: Please feel free to replace the contents of this function to improve upon your algorithm's performance...
-	
-	int tMid = randomInt( 0, (int)iTileCount );
+	//leave it at it 0-9 to limit output to 0-8, then multiply by 9. this way it will break on a 9 cell row
+    //i.e., 0, 9, 18, 27, 36, 45 54, 63, or 72. this cuts down on the time some.
+	int tMid = randomInt( 0, 9 );
+    tMid*=9;
 	for(size_t i = 0; i < iTileCount; i++) {
 		if(i < tMid) { oBoard[i] = iBoardA[i]; }
 		else         { oBoard[i] = iBoardB[i]; }
