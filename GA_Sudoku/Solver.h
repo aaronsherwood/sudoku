@@ -196,12 +196,7 @@ static float fitnessFunc(const int* iBoard, const size_t& iTileCount)
         memset(tArray, 0, 9);
     }
     
-    
-    
-    
-    
-    
-	return (float)tCount/243;
+	return (float)tCount;
     
 }
 
