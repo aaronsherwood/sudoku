@@ -49,29 +49,31 @@ protected:
 	size_t					mPopulationSize;
 	size_t					mGeneCount;
 	size_t					mGenerationIter;
+    size_t                  mLocalOptimaCounter;
 	float					mMutationRate;
 	bool					mRunning;
 	
 	DataType*				mWinState;
 	
 public:
-
+    
 	/**
 	 * @brief Population constructor
 	 */
 	Population(const size_t& iPopulationSize, const size_t& iGeneCount, const float& iMutationRate) :
-		mPopulationSize( iPopulationSize ),
-		mGeneCount( iGeneCount ),
-		mMutationRate( iMutationRate ),
-		mGenerationIter( 0 ),
-		mRunning( true ),
-		mPopulation( NULL ),
-		mWinState( NULL ),
-		mInitializeFunction( NULL ),
-		mFitnessFunction( NULL ),
-		mCrossoverFunction( NULL ),
-		mMutationFunction( NULL ),
-		mPrintFunction( NULL )
+    mPopulationSize( iPopulationSize ),
+    mGeneCount( iGeneCount ),
+    mMutationRate( iMutationRate ),
+    mGenerationIter( 0 ),
+    mLocalOptimaCounter(0),
+    mRunning( true ),
+    mPopulation( NULL ),
+    mWinState( NULL ),
+    mInitializeFunction( NULL ),
+    mFitnessFunction( NULL ),
+    mCrossoverFunction( NULL ),
+    mMutationFunction( NULL ),
+    mPrintFunction( NULL )
 	{
 	}
 	
@@ -140,6 +142,7 @@ public:
 	 */
 	void initialize()
 	{
+        mLocalOptimaCounter=0;
 		if( mInitializeFunction ) {
 			// Initialize population:
 			mPopulation = new DataType*[ mPopulationSize ];
@@ -148,7 +151,6 @@ public:
 				mInitializeFunction( mPopulation[ i ], mGeneCount );
 			}
 		}
-        mPrintFunction(mPopulation[0],81);
 	}
 	
 	/**
@@ -162,17 +164,22 @@ public:
 			size_t tBestIdx    = 0;
 			float  tBestScore  = -1e12;
 			float  tWorstScore = 1e12;
+            float tAvgScore = 0.0;
 			// Perform scoring:
 			for(size_t i = 0; i < mPopulationSize; i++) {
 				tScores[ i ] = mFitnessFunction( mPopulation[ i ], mGeneCount );
+                tAvgScore += tScores[i];
 				if( tScores[ i ] > tBestScore ) {
 					tBestScore = tScores[ i ];
 					tBestIdx   = i;
-				}
+                }
 				if( tScores[ i ] < tWorstScore ) {
 					tWorstScore = tScores[ i ];
 				}
 			}
+            
+            tAvgScore/=mPopulationSize;
+            
 			// Check whether best individual is complete:
 			if( getBoardWin( mPopulation[ tBestIdx ], mGeneCount ) ) {
 				// Copy win state:
@@ -216,6 +223,10 @@ public:
 				mPopulation = tPopulation;
 				// Advance generation iter:
 				mGenerationIter++;
+                mLocalOptimaCounter++;
+                if (mLocalOptimaCounter>150) {
+                    initialize();
+                }
 			}
 		}
 	}
