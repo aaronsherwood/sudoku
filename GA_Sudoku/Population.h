@@ -164,11 +164,11 @@ public:
 			size_t tBestIdx    = 0;
 			float  tBestScore  = -1e12;
 			float  tWorstScore = 1e12;
-            float tAvgScore = 0.0;
+            //float tAvgScore = 0.0;
 			// Perform scoring:
 			for(size_t i = 0; i < mPopulationSize; i++) {
 				tScores[ i ] = mFitnessFunction( mPopulation[ i ], mGeneCount );
-                tAvgScore += tScores[i];
+                //tAvgScore += tScores[i];
 				if( tScores[ i ] > tBestScore ) {
 					tBestScore = tScores[ i ];
 					tBestIdx   = i;
@@ -178,7 +178,7 @@ public:
 				}
 			}
             
-            tAvgScore/=mPopulationSize;
+            //tAvgScore/=mPopulationSize;
             
 			// Check whether best individual is complete:
 			if( getBoardWin( mPopulation[ tBestIdx ], mGeneCount ) ) {
