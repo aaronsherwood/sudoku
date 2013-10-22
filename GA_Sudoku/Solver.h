@@ -18,7 +18,7 @@
 #pragma mark -
 #pragma mark - TEAM_PARAMS
 
-static const std::string	kAuthorTeam		= "Super Style";
+static const std::string	kAuthorTeam		= "___";
 static const float			kMutationRate	= 0.5f;
 
 #pragma mark -
